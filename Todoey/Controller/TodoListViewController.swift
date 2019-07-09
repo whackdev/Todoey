@@ -12,7 +12,6 @@ class TodoListViewController: UITableViewController {
 
     var itemArray = [Item]()
     
-    let defaults = UserDefaults.standard
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     override func viewDidLoad() {
@@ -58,7 +57,10 @@ class TodoListViewController: UITableViewController {
         let alert = UIAlertController(title: "Add New Todo Item", message: "", preferredStyle: .alert)
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-            self.itemArray.append(Item(newTodoTextField.text!))
+            
+            let newItem = Item(newTodoTextField.text!)
+            
+            self.itemArray.append(newItem)
             
             self.saveItems()
         }
@@ -69,12 +71,12 @@ class TodoListViewController: UITableViewController {
             alertTextField.placeholder = "Create new item"
             newTodoTextField = alertTextField
         }
+        
         present(alert, animated: true, completion: nil)
     }
     
     //MARK - Data Manipulation Methods
     func saveItems() {
-        
         let encoder = PropertyListEncoder()
         
         do {
@@ -89,7 +91,6 @@ class TodoListViewController: UITableViewController {
     }
     
     func loadItems() {
-        
         if let data = try? Data(contentsOf: dataFilePath!) {
             let decoder = PropertyListDecoder()
             

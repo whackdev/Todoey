@@ -54,7 +54,7 @@ class CategoryViewController: UITableViewController {
 
             let newCategory = Category(context: self.context)
 
-            newCategory.name = newCategoryTextField.text
+            newCategory.name = newCategoryTextField.text!
 
             self.categoryArray.append(newCategory)
 

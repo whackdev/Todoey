@@ -27,9 +27,11 @@ class TodoListViewController: UITableViewController {
     }
     
     //MARK: - TableView DataSource Methods
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items?.count ?? 1
     }
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoListItem", for: indexPath)
@@ -42,19 +44,24 @@ class TodoListViewController: UITableViewController {
             cell.textLabel?.text = "No items added yet"
         }
         
-        
         return cell
     }
     
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedItem = items![indexPath.row]
-        
-//        selectedItem.done = !selectedItem.done
-//
-//        saveItems()
-        
         tableView.deselectRow(at: indexPath, animated: true)
         
+        if let item = items?[indexPath.row] {
+            do {
+                try realm.write {
+                    item.done = !item.done
+                }
+            } catch {
+                print("Error updating item \(error)")
+            }
+        }
+        
+        tableView.reloadData()
     }
     
     //MARK: - Add New Items

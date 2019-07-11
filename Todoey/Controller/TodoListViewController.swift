@@ -49,7 +49,6 @@ class TodoListViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         
         if let item = items?[indexPath.row] {
             do {
@@ -62,6 +61,8 @@ class TodoListViewController: UITableViewController {
         }
         
         tableView.reloadData()
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     //MARK: - Add New Items

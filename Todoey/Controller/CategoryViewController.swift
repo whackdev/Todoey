@@ -31,6 +31,7 @@ class CategoryViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         cell.textLabel?.text = categories?[indexPath.row].name
+        cell.backgroundColor = UIColor(hexString: categories?[indexPath.row].cellBackgroundColor)
         
         return cell
         
@@ -64,6 +65,8 @@ class CategoryViewController: SwipeTableViewController {
             let newCategory = Category()
 
             newCategory.name = newCategoryTextField.text!
+            newCategory.cellBackgroundColor = UIColor.randomFlat()?.hexValue()
+            super.updateCellBackground(colorString: newCategory.cellBackgroundColor)
 
             self.save(category: newCategory)
         }

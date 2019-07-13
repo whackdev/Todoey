@@ -8,10 +8,17 @@
 
 import UIKit
 import SwipeCellKit
+import ChameleonFramework
 
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
     
     var cell: UITableViewCell?
+    var cellBackgroundColorString: String? {
+        didSet {
+                cell?.backgroundColor = UIColor(hexString: cellBackgroundColorString)
+        }
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,11 +27,11 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
+        let currentCell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
         
-        cell.delegate = self
-        
-        return cell
+        currentCell.delegate = self
+        cell = currentCell
+        return currentCell
     }
 
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
@@ -49,6 +56,10 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     
     func updateModel(at indexPath: IndexPath) {
         // Sub classes call data model updates here
+    }
+    
+    func updateCellBackground(colorString: String? ) {
+        cellBackgroundColorString = colorString ?? UIColor.randomFlat()!.hexValue()
     }
     
 }

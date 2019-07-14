@@ -20,6 +20,8 @@ class TodoListViewController: SwipeTableViewController {
             loadItems()
         }
     }
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var barButton: UIBarButtonItem!
     
     
     override func viewDidLoad() {
@@ -27,6 +29,35 @@ class TodoListViewController: SwipeTableViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        if let colorHex = selectedCategory?.cellBackgroundColor {
+            guard let navBar = navigationController?.navigationBar else {fatalError("Navigation Controller does not exist")}
+            
+            if let navBarColor = UIColor(hexString: colorHex) {
+                
+                navBar.barTintColor = navBarColor
+                navBar.tintColor = UIColor.init(contrastingBlackOrWhiteColorOn: navBarColor, isFlat: true)
+               
+                navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.init(contrastingBlackOrWhiteColorOn: navBarColor, isFlat: true) ?? UIColor.flatWhite]
+                
+                searchBar.barTintColor = navBarColor
+            }
+            
+            title = selectedCategory?.name
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        guard let originalColor = UIColor(hexString: "1D98F6") else {fatalError("Color not found")}
+        
+        let navBar = navigationController?.navigationBar
+        let contrastColor = UIColor(contrastingBlackOrWhiteColorOn: originalColor, isFlat: true)
+        navBar?.barTintColor = originalColor
+        navBar?.tintColor = contrastColor
+        navBar?.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: contrastColor!]
+        
+    }
     //MARK: - TableView DataSource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -138,6 +169,8 @@ class TodoListViewController: SwipeTableViewController {
 
 //MARK: - Search Bar Methods
 extension TodoListViewController: UISearchBarDelegate {
+    
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         items = items?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
@@ -157,3 +190,4 @@ extension TodoListViewController: UISearchBarDelegate {
         }
     }
 }
+

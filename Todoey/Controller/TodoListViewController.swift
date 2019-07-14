@@ -11,6 +11,13 @@ import RealmSwift
 import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
+    
+    //MARK: - UI Outlets
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var barButton: UIBarButtonItem!
+    
+    
+    //MARK: - Variables
     let realm = try! Realm()
     
     var items: Results<Item>?
@@ -20,9 +27,9 @@ class TodoListViewController: SwipeTableViewController {
             loadItems()
         }
     }
-    @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var barButton: UIBarButtonItem!
     
+    
+    //MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,33 +37,37 @@ class TodoListViewController: SwipeTableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
-        if let colorHex = selectedCategory?.cellBackgroundColor {
-            guard let navBar = navigationController?.navigationBar else {fatalError("Navigation Controller does not exist")}
-            
-            if let navBarColor = UIColor(hexString: colorHex) {
-                
-                navBar.barTintColor = navBarColor
-                navBar.tintColor = UIColor.init(contrastingBlackOrWhiteColorOn: navBarColor, isFlat: true)
-               
-                navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.init(contrastingBlackOrWhiteColorOn: navBarColor, isFlat: true) ?? UIColor.flatWhite]
-                
-                searchBar.barTintColor = navBarColor
-            }
-            
-            title = selectedCategory?.name
+        if let category = selectedCategory {
+            title = category.name
+            updateNavBar(withHexCode: category.cellBackgroundColor!)
         }
+        
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        guard let originalColor = UIColor(hexString: "1D98F6") else {fatalError("Color not found")}
         
-        let navBar = navigationController?.navigationBar
-        navBar?.barTintColor = originalColor
-        navBar?.tintColor = UIColor.flatWhite()
-        navBar?.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.flatWhite()!]
+         updateNavBar(withHexCode: UIColor(hexString: "1D98F6")?.hexValue() ?? UIColor.flatWhite().hexValue())
         
     }
+    
+    
+    //MARK: - Navbar Setup Methods
+    func updateNavBar(withHexCode colorString: String) {
+    
+        guard let navBar = navigationController?.navigationBar else {fatalError("Navigation Controller does not exist")}
+        guard let navBarColor = UIColor(hexString: colorString) else {fatalError("Updated color not found")}
+        guard let contrastColor = UIColor(contrastingBlackOrWhiteColorOn: navBarColor, isFlat: true) else {fatalError("Contrast color not found")}
+        
+        
+        navBar.barTintColor = navBarColor
+        searchBar.barTintColor = navBarColor
+        navBar.tintColor = contrastColor
+        navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: contrastColor]
+        
+    }
+    
+    
     //MARK: - TableView DataSource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -142,8 +153,8 @@ class TodoListViewController: SwipeTableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    //MARK: - Data Manipulation Methods
     
+    //MARK: - Data Manipulation Methods
     func loadItems() {
         
         items = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
@@ -166,6 +177,7 @@ class TodoListViewController: SwipeTableViewController {
     }
 }
 
+
 //MARK: - Search Bar Methods
 extension TodoListViewController: UISearchBarDelegate {
     
@@ -185,8 +197,8 @@ extension TodoListViewController: UISearchBarDelegate {
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder()
             }
-
         }
     }
+    
 }
 

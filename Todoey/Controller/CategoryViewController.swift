@@ -23,6 +23,13 @@ class CategoryViewController: SwipeTableViewController {
         loadCategories()
     }
     
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        guard let navBar = navigationController?.navigationBar else {fatalError("Navigation Controller not found")}
+        
+        navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.flatWhite()!]
+    }
     //MARK: - TableView DataSource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categories?.count ?? 1

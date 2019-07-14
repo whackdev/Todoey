@@ -52,10 +52,9 @@ class TodoListViewController: SwipeTableViewController {
         guard let originalColor = UIColor(hexString: "1D98F6") else {fatalError("Color not found")}
         
         let navBar = navigationController?.navigationBar
-        let contrastColor = UIColor(contrastingBlackOrWhiteColorOn: originalColor, isFlat: true)
         navBar?.barTintColor = originalColor
-        navBar?.tintColor = contrastColor
-        navBar?.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: contrastColor!]
+        navBar?.tintColor = UIColor.flatWhite()
+        navBar?.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.flatWhite()!]
         
     }
     //MARK: - TableView DataSource Methods
